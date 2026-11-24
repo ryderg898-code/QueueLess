@@ -10,95 +10,238 @@
 
 <style>
 :root {
---ink:#10233c;
---muted:#64748b;
---blue:#2563eb;
---pale:#eff6ff;
---line:#dbe5f1;
+  --ink:#10233c;
+  --muted:#64748b;
+  --blue:#2563eb;
+  --pale:#eff6ff;
+  --line:#dbe5f1;
 }
-*{box-sizing:border-box}
-body{
-margin:0;
-background:#f6f8fc;
-color:var(--ink);
-font-family:system-ui,Arial,sans-serif
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:#f6f8fc;
+  color:var(--ink);
+  font-family:system-ui,Arial,sans-serif;
 }
-.wrap{max-width:1000px;margin:auto;padding:18px}
-.nav{
-display:flex;justify-content:space-between;
-align-items:center;padding:10px 0
+
+.wrap { max-width:1000px; margin:auto; padding:18px; }
+
+.nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
 }
-.logo{font-weight:900;font-size:24px}
-.logo span{color:var(--blue)}
-.nav a{
-color:var(--blue);text-decoration:none;
-font-weight:700;font-size:13px;margin-left:10px
+.logo { font-weight:900; font-size:24px; }
+.logo span { color:var(--blue); }
+
+.nav a {
+  color:var(--blue);
+  text-decoration:none;
+  font-weight:700;
+  font-size:13px;
+  margin-left:10px;
 }
-.hero{
-padding:32px 0;display:grid;
-grid-template-columns:1.2fr .8fr;gap:20px
+
+.hero {
+  padding:32px 0;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:20px;
 }
-.hero h1{font-size:clamp(32px,5vw,52px);line-height:1.05}
-.hero p{color:var(--muted);line-height:1.6}
-.art{
-background:linear-gradient(135deg,#e5efff,#d5e5ff);
-border-radius:24px;display:flex;
-align-items:center;justify-content:center;
-font-size:65px;min-height:180px
+.hero h1 { font-size:clamp(32px,5vw,52px); line-height:1.05; }
+.hero p { color:var(--muted); line-height:1.6; }
+
+.art {
+  background:linear-gradient(135deg,#e5efff,#d5e5ff);
+  border-radius:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:65px;
+  min-height:180px;
 }
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.card{
-background:white;border:1px solid var(--line);
-border-radius:18px;padding:20px;
-box-shadow:0 8px 26px #16345a08
+
+.grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
-h2{font-size:20px}
-.label{
-display:block;font-size:13px;
-font-weight:700;margin:13px 0 7px
+
+.card {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 8px 26px #16345a08;
 }
-.input,select{
-width:100%;padding:12px;
-border:1px solid #d5dfec;
-border-radius:11px;font-size:15px;
-background:white;color:var(--ink)
+
+h2 { font-size:20px; }
+
+.label {
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin:13px 0 7px;
 }
-.slots{
-display:grid;grid-template-columns:repeat(3,1fr);
-gap:8px;margin-top:8px
+
+.input {
+  width:100%;
+  padding:12px;
+  border:1px solid #d5dfec;
+  border-radius:11px;
+  font-size:16px;
+  background:white;
+  color:var(--ink);
+  font-family:inherit;
 }
-.slot{
-padding:11px 4px;border:1px solid #d5dfec;
-border-radius:10px;background:white;
-font-weight:700;cursor:pointer
+
+.input:focus {
+  outline:2px solid #bfdbfe;
+  border-color:var(--blue);
 }
-.slot.selected{
-background:#edf4ff;color:var(--blue);
-border-color:var(--blue)
+
+/* Custom service dropdown */
+.dropdown { position:relative; width:100%; }
+
+.dropdown-toggle {
+  width:100%;
+  padding:13px;
+  background:white;
+  border:1px solid #d5dfec;
+  border-radius:11px;
+  color:var(--ink);
+  font-size:16px;
+  text-align:left;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+  min-height:48px;
 }
-.slot:disabled{opacity:.4;text-decoration:line-through}
-.btn{
-width:100%;margin-top:15px;padding:14px;
-background:var(--blue);color:white;
-border:0;border-radius:12px;
-font-size:15px;font-weight:800;cursor:pointer
+
+.dropdown-menu {
+  display:none;
+  position:absolute;
+  top:calc(100% + 6px);
+  left:0;
+  width:100%;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 10px 30px #10233c20;
+  z-index:50;
+  overflow:hidden;
 }
-.btn:disabled{opacity:.6}
-.summary{background:var(--pale);padding:13px;border-radius:13px;margin-top:13px}
-.note{font-size:12px;color:var(--muted);line-height:1.5}
-.result{
-padding:13px;border-radius:12px;margin-top:13px;
-background:#f0fbf6;color:#135f42;
-border:1px solid #b9e2d0
+
+.dropdown-menu.open { display:block; }
+
+.dropdown-option {
+  display:block;
+  width:100%;
+  padding:13px 15px;
+  border:0;
+  background:white;
+  text-align:left;
+  font-size:15px;
+  color:var(--ink);
+  cursor:pointer;
 }
-.error{background:#fff1f1;color:#a11}
-.hide{display:none}
-.section{margin:24px 0}
-.footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
-@media(max-width:700px){
-.hero,.grid{grid-template-columns:1fr}
-.art{min-height:110px}
-.hero h1{font-size:38px}
+
+.dropdown-option:hover,
+.dropdown-option:focus {
+  background:var(--pale);
+  color:var(--blue);
+}
+
+.slots {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:8px;
+}
+
+.slot {
+  padding:11px 4px;
+  border:1px solid #d5dfec;
+  border-radius:10px;
+  background:white;
+  font-weight:700;
+  cursor:pointer;
+  color:var(--ink);
+}
+
+.slot.selected {
+  background:#edf4ff;
+  color:var(--blue);
+  border-color:var(--blue);
+}
+
+.slot:disabled {
+  opacity:.4;
+  text-decoration:line-through;
+  cursor:not-allowed;
+}
+
+.btn {
+  width:100%;
+  margin-top:15px;
+  padding:14px;
+  background:var(--blue);
+  color:white;
+  border:0;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn:disabled { opacity:.6; cursor:not-allowed; }
+
+.summary {
+  background:var(--pale);
+  padding:13px;
+  border-radius:13px;
+  margin-top:13px;
+}
+
+.note {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+.result {
+  padding:13px;
+  border-radius:12px;
+  margin-top:13px;
+  background:#f0fbf6;
+  color:#135f42;
+  border:1px solid #b9e2d0;
+}
+
+.error {
+  background:#fff1f1;
+  color:#a11;
+  border-color:#f5caca;
+}
+
+.hide { display:none; }
+
+.section { margin:24px 0; }
+
+.footer {
+  text-align:center;
+  color:var(--muted);
+  padding:25px;
+  font-size:12px;
+}
+
+@media(max-width:700px) {
+  .hero,.grid { grid-template-columns:1fr; }
+  .art { min-height:110px; }
+  .hero h1 { font-size:38px; }
 }
 </style>
 </head>
@@ -107,66 +250,112 @@ border:1px solid #b9e2d0
 <div class="wrap">
 
 <nav class="nav">
-<div class="logo">Queue<span>Less</span></div>
-<div>
-<a href="#book">Book</a>
-<a href="#partner">Partner</a>
-</div>
+  <div class="logo">Queue<span>Less</span></div>
+  <div>
+    <a href="#book">Book</a>
+    <a href="#partner">Partner</a>
+  </div>
 </nav>
 
 <section class="hero">
-<div>
-<p><strong>LESS WAITING. MORE LIVING.</strong></p>
-<h1>Your time is too valuable for queues.</h1>
-<p>Choose a service, reserve a time, and arrive when it's your turn.</p>
-</div>
-<div class="art">🗓️ ⏱️</div>
+  <div>
+    <p><strong>LESS WAITING. MORE LIVING.</strong></p>
+    <h1>Your time is too valuable for queues.</h1>
+    <p>Choose a service, reserve a time, and arrive when it's your turn.</p>
+  </div>
+  <div class="art">🗓️ ⏱️</div>
 </section>
 
 <section id="book" class="section">
 <div class="grid">
 
 <div class="card">
-<h2>Find a service</h2>
+  <h2>Find a service</h2>
 
-<label class="label">Service type</label>
-<select id="service">
-<option>Clinic appointment</option>
-<option>Salon</option>
-<option>Vehicle service</option>
-<option>Diagnostic lab</option>
-<option>Restaurant table</option>
-</select>
+  <label class="label">Service type</label>
 
-<label class="label">Business / area</label>
-<input class="input" id="place" placeholder="Business name or area">
+  <div class="dropdown" id="serviceDropdown">
+    <button type="button"
+      class="dropdown-toggle"
+      id="serviceToggle"
+      aria-expanded="false"
+      aria-haspopup="listbox">
+      <span id="serviceText">Select a service</span>
+      <span>▼</span>
+    </button>
 
-<label class="label">Date</label>
-<input class="input" type="date" id="date">
+    <div class="dropdown-menu"
+      id="serviceMenu"
+      role="listbox">
 
-<label class="label">Available demo slots</label>
-<div class="slots" id="slots"></div>
+      <button type="button" class="dropdown-option"
+        data-value="Clinic appointment">
+        🏥 Clinic appointment
+      </button>
 
-<p class="note">These are sample times, not live provider availability.</p>
+      <button type="button" class="dropdown-option"
+        data-value="Salon">
+        💇 Salon
+      </button>
+
+      <button type="button" class="dropdown-option"
+        data-value="Vehicle service">
+        🚗 Vehicle service
+      </button>
+
+      <button type="button" class="dropdown-option"
+        data-value="Diagnostic lab">
+        🧪 Diagnostic lab
+      </button>
+
+      <button type="button" class="dropdown-option"
+        data-value="Restaurant table">
+        🍽️ Restaurant table
+      </button>
+    </div>
+  </div>
+
+  <label class="label">Business / area</label>
+  <input class="input" id="place"
+    placeholder="Business name or area">
+
+  <label class="label">Date</label>
+  <input class="input" type="date" id="date">
+
+  <label class="label">Available demo slots</label>
+  <div class="slots" id="slots"></div>
+
+  <p class="note">
+    These are sample times, not live provider availability.
+  </p>
 </div>
 
 <div class="card">
-<h2>Booking details</h2>
+  <h2>Booking details</h2>
 
-<label class="label">Your name</label>
-<input class="input" id="name" placeholder="Full name">
+  <label class="label">Your name</label>
+  <input class="input" id="name"
+    placeholder="Full name" autocomplete="name">
 
-<label class="label">Mobile number</label>
-<input class="input" id="phone" maxlength="10"
-inputmode="numeric" placeholder="10-digit number">
+  <label class="label">Mobile number</label>
+  <input class="input" id="phone"
+    maxlength="10" inputmode="numeric"
+    placeholder="10-digit number" autocomplete="tel">
 
-<div class="summary">
-<strong>Selected time</strong>
-<div id="selected">Choose a slot</div>
-</div>
+  <div class="summary">
+    <strong>Selected service</strong>
+    <div id="summaryService">Not selected</div>
+    <br>
+    <strong>Selected time</strong>
+    <div id="selected">Choose a slot</div>
+  </div>
 
-<button class="btn" id="book">Confirm booking</button>
-<div id="bookmsg" class="result hide"></div>
+  <button class="btn" id="book" type="button">
+    Confirm booking
+  </button>
+
+  <div id="bookmsg" class="result hide"
+    role="status" aria-live="polite"></div>
 </div>
 
 </div>
@@ -174,201 +363,305 @@ inputmode="numeric" placeholder="10-digit number">
 
 <section id="partner" class="section">
 <div class="card">
-<h2>Partner with QueueLess</h2>
-<p class="note">Register your business to request a QueueLess listing.</p>
+  <h2>Partner with QueueLess</h2>
+  <p class="note">
+    Register your business to request a QueueLess listing.
+  </p>
 
-<form id="partnerForm">
+  <form id="partnerForm">
 
-<label class="label">Business name</label>
-<input class="input" id="biz" required>
+    <label class="label">Business name</label>
+    <input class="input" id="biz" required>
 
-<label class="label">Owner name</label>
-<input class="input" id="owner" required>
+    <label class="label">Owner name</label>
+    <input class="input" id="owner" required>
 
-<label class="label">Business phone</label>
-<input class="input" id="bizphone" required maxlength="10" inputmode="numeric">
+    <label class="label">Business phone</label>
+    <input class="input" id="bizphone"
+      required maxlength="10" inputmode="numeric">
 
-<label class="label">Business type</label>
-<select id="biztype">
-<option>Diagnostic lab</option>
-<option>Clinic</option>
-<option>Salon</option>
-<option>Vehicle service centre</option>
-<option>Restaurant</option>
-<option>Other</option>
-</select>
+    <label class="label">Business type</label>
+    <select class="input" id="biztype">
+      <option>Diagnostic lab</option>
+      <option>Clinic</option>
+      <option>Salon</option>
+      <option>Vehicle service centre</option>
+      <option>Restaurant</option>
+      <option>Other</option>
+    </select>
 
-<label class="label">Business address</label>
-<input class="input" id="address" required>
+    <label class="label">Business address</label>
+    <input class="input" id="address" required>
 
-<label class="label">Services and duration</label>
-<textarea class="input" id="services" rows="3"></textarea>
+    <label class="label">Services and duration</label>
+    <textarea class="input" id="services" rows="3"></textarea>
 
-<button class="btn" type="submit">Submit partner request</button>
-</form>
+    <button class="btn" type="submit">
+      Submit partner request
+    </button>
+  </form>
 
-<div id="partnermsg" class="result hide"></div>
+  <div id="partnermsg" class="result hide"
+    role="status" aria-live="polite"></div>
 </div>
 </section>
 
 <div class="footer">
-QueueLess · Powered by Supabase
+  QueueLess · Powered by Supabase
 </div>
 
 </div>
 
 <script>
+/* SUPABASE CONFIGURATION */
 const SUPABASE_URL =
 'https://hrdrkepzlumlbwnhnaob.supabase.co';
 
 const SUPABASE_KEY =
 'sb_publishable_bpO4LsR6W4nJdJZrKGz2SQ_t37XBHPM';
 
-const db = window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+let db = null;
 
+if (window.supabase) {
+  db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+}
+
+/* SERVICE DROPDOWN */
+let selectedService = '';
+
+const toggle = document.getElementById('serviceToggle');
+const menu = document.getElementById('serviceMenu');
+const serviceText = document.getElementById('serviceText');
+
+toggle.addEventListener('click', function() {
+  const isOpen = menu.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', String(isOpen));
+});
+
+document.querySelectorAll('.dropdown-option').forEach(option => {
+  option.addEventListener('click', function() {
+    selectedService = this.dataset.value;
+    serviceText.textContent = this.textContent.trim();
+
+    menu.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+
+    document.getElementById('summaryService').textContent =
+      selectedService;
+  });
+});
+
+document.addEventListener('click', function(event) {
+  if (!document.getElementById('serviceDropdown')
+      .contains(event.target)) {
+    menu.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+});
+
+/* TIME SLOTS */
 const times = [
-'09:00 AM','09:30 AM','10:00 AM',
-'10:30 AM','11:00 AM','11:30 AM',
-'12:00 PM','12:30 PM','02:00 PM'
+  '09:00 AM','09:30 AM','10:00 AM',
+  '10:30 AM','11:00 AM','11:30 AM',
+  '12:00 PM','12:30 PM','02:00 PM'
 ];
 
 let chosen = '';
 
 const slots = document.getElementById('slots');
 
-times.forEach((time,index)=>{
-const btn=document.createElement('button');
-btn.type='button';
-btn.className='slot';
-btn.textContent=time;
+times.forEach((time, index) => {
+  const btn = document.createElement('button');
 
-if(index===2 || index===6) btn.disabled=true;
+  btn.type = 'button';
+  btn.className = 'slot';
+  btn.textContent = time;
 
-btn.onclick=()=>{
-chosen=time;
-document.querySelectorAll('.slot').forEach(x=>
-x.classList.remove('selected'));
-btn.classList.add('selected');
-document.getElementById('selected').textContent=time;
-};
-slots.appendChild(btn);
+  if (index === 2 || index === 6) {
+    btn.disabled = true;
+  }
+
+  btn.addEventListener('click', function() {
+    chosen = time;
+
+    document.querySelectorAll('.slot').forEach(x => {
+      x.classList.remove('selected');
+    });
+
+    btn.classList.add('selected');
+    document.getElementById('selected').textContent = time;
+  });
+
+  slots.appendChild(btn);
 });
 
-const dateEl=document.getElementById('date');
-const today=new Date();
-const localDate=new Date(
-today.getTime()-today.getTimezoneOffset()*60000
-).toISOString().slice(0,10);
+/* LOCAL DATE */
+const dateEl = document.getElementById('date');
 
-dateEl.min=localDate;
-dateEl.value=localDate;
+function getLocalDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2,'0');
+  const day = String(now.getDate()).padStart(2,'0');
 
-function showMessage(id,message,isError=false){
-const el=document.getElementById(id);
-el.textContent=message;
-el.classList.remove('hide','error');
-if(isError) el.classList.add('error');
+  return `${year}-${month}-${day}`;
 }
 
-document.getElementById('book').onclick=async()=>{
-const button=document.getElementById('book');
-const name=document.getElementById('name').value.trim();
-const phone=document.getElementById('phone').value.trim();
-const place=document.getElementById('place').value.trim();
+dateEl.min = getLocalDate();
+dateEl.value = getLocalDate();
 
-if(!name || !place || !chosen || !dateEl.value){
-alert('Please complete all booking details.');
-return;
+/* MESSAGES */
+function showMessage(id, message, isError = false) {
+  const el = document.getElementById(id);
+
+  el.textContent = message;
+  el.classList.remove('hide','error');
+
+  if (isError) {
+    el.classList.add('error');
+  }
 }
 
-if(!/^[6-9]\d{9}$/.test(phone)){
-alert('Enter a valid Indian 10-digit mobile number.');
-return;
-}
+/* BOOKING */
+document.getElementById('book').addEventListener('click', async function() {
+  const button = this;
 
-button.disabled=true;
-button.textContent='Submitting...';
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const place = document.getElementById('place').value.trim();
 
-try{
-const {error}=await db.from('bookings').insert([{
-customer_name:name,
-phone:phone,
-service_type:document.getElementById('service').value,
-business_area:place,
-booking_date:dateEl.value,
-booking_time:chosen,
-status:'PENDING'
-}]);
+  document.getElementById('bookmsg').classList.add('hide');
 
-if(error) throw error;
+  if (!selectedService) {
+    showMessage('bookmsg','Please select a service.',true);
+    return;
+  }
 
-showMessage('bookmsg',
-'Booking submitted successfully! Your request is pending confirmation.');
+  if (!name || !place || !chosen || !dateEl.value) {
+    showMessage('bookmsg',
+      'Please complete your name, business/area, date and time slot.',true);
+    return;
+  }
 
-document.getElementById('name').value='';
-document.getElementById('phone').value='';
-document.getElementById('place').value='';
-chosen='';
-document.getElementById('selected').textContent='Choose a slot';
-document.querySelectorAll('.slot').forEach(x=>
-x.classList.remove('selected'));
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    showMessage('bookmsg',
+      'Please enter a valid Indian 10-digit mobile number.',true);
+    return;
+  }
 
-}catch(error){
-console.error(error);
-showMessage('bookmsg',
-'Booking could not be submitted. Please check your database setup and try again.',true);
-}finally{
-button.disabled=false;
-button.textContent='Confirm booking';
-}
-};
+  if (dateEl.value < getLocalDate()) {
+    showMessage('bookmsg','Please select today or a future date.',true);
+    return;
+  }
 
-document.getElementById('partnerForm').onsubmit=async(e)=>{
-e.preventDefault();
+  if (!db) {
+    showMessage('bookmsg',
+      'Database connection could not load. Please refresh and try again.',true);
+    return;
+  }
 
-const button=e.target.querySelector('button');
-button.disabled=true;
-button.textContent='Submitting...';
+  button.disabled = true;
+  button.textContent = 'Submitting...';
 
-const phone=document.getElementById('bizphone').value.trim();
+  try {
+    const { error } = await db.from('bookings').insert([{
+      customer_name: name,
+      phone: phone,
+      service_type: selectedService,
+      business_area: place,
+      booking_date: dateEl.value,
+      booking_time: chosen,
+      status: 'PENDING'
+    }]);
 
-if(!/^[6-9]\d{9}$/.test(phone)){
-showMessage('partnermsg','Enter a valid Indian 10-digit mobile number.',true);
-button.disabled=false;
-button.textContent='Submit partner request';
-return;
-}
+    if (error) throw error;
 
-try{
-const {error}=await db.from('partner_requests').insert([{
-business_name:document.getElementById('biz').value.trim(),
-owner_name:document.getElementById('owner').value.trim(),
-business_phone:phone,
-business_type:document.getElementById('biztype').value,
-address:document.getElementById('address').value.trim(),
-services:document.getElementById('services').value.trim(),
-status:'PENDING'
-}]);
+    showMessage('bookmsg',
+      'Booking submitted successfully! Your request is pending confirmation.');
 
-if(error) throw error;
+    document.getElementById('name').value = '';
+    document.getElementById('phone').value = '';
+    document.getElementById('place').value = '';
 
-showMessage('partnermsg',
-'Partner request submitted successfully! Status: Pending verification.');
+    chosen = '';
+    selectedService = '';
 
-e.target.reset();
+    serviceText.textContent = 'Select a service';
+    document.getElementById('summaryService').textContent = 'Not selected';
+    document.getElementById('selected').textContent = 'Choose a slot';
 
-}catch(error){
-console.error(error);
-showMessage('partnermsg',
-'Request could not be submitted. Please check your database setup.',true);
-}finally{
-button.disabled=false;
-button.textContent='Submit partner request';
-}
-};
+    document.querySelectorAll('.slot').forEach(x => {
+      x.classList.remove('selected');
+    });
+
+  } catch (error) {
+    console.error('Booking error:', error);
+
+    showMessage('bookmsg',
+      'Booking failed. Please check your Supabase table and permissions.',true);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Confirm booking';
+  }
+});
+
+/* PARTNER REGISTRATION */
+document.getElementById('partnerForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const form = this;
+  const button = form.querySelector('button');
+  const phone = document.getElementById('bizphone').value.trim();
+
+  document.getElementById('partnermsg').classList.add('hide');
+
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    showMessage('partnermsg',
+      'Enter a valid Indian 10-digit mobile number.',true);
+    return;
+  }
+
+  if (!db) {
+    showMessage('partnermsg',
+      'Database connection could not load. Please refresh.',true);
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'Submitting...';
+
+  try {
+    const { error } = await db.from('partner_requests').insert([{
+      business_name: document.getElementById('biz').value.trim(),
+      owner_name: document.getElementById('owner').value.trim(),
+      business_phone: phone,
+      business_type: document.getElementById('biztype').value,
+      address: document.getElementById('address').value.trim(),
+      services: document.getElementById('services').value.trim(),
+      status: 'PENDING'
+    }]);
+
+    if (error) throw error;
+
+    showMessage('partnermsg',
+      'Partner request submitted successfully! Status: Pending verification.');
+
+    form.reset();
+
+  } catch (error) {
+    console.error('Partner error:', error);
+
+    showMessage('partnermsg',
+      'Request could not be submitted. Please check database setup and permissions.',true);
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Submit partner request';
+  }
+});
 </script>
+
 </body>
 </html>
