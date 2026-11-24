@@ -1,18 +1,374 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QueueLess — Book a slot, skip the wait</title>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QueueLess - Book a slot, skip the wait</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--ink:#10233c;--muted:#64748b;--blue:#2563eb;--pale:#eff6ff;--line:#dbe5f1;--green:#15803d;--amber:#92400e}*{box-sizing:border-box}body{margin:0;background:#f6f8fc;color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.wrap{max-width:1000px;margin:auto;padding:18px}.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}.logo{font-weight:900;font-size:24px;letter-spacing:-.6px}.logo span{color:var(--blue)}.tag{background:#eaf1ff;color:#2459bd;padding:7px 11px;border-radius:30px;font-size:12px;font-weight:700}.hero{padding:32px 0 22px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center}.hero h1{font-size:clamp(32px,5vw,52px);line-height:1.05;margin:10px 0;letter-spacing:-1.6px}.hero p{color:var(--muted);font-size:17px;line-height:1.55}.art{background:linear-gradient(135deg,#e5efff,#d5e5ff);border-radius:24px;min-height:180px;display:flex;align-items:center;justify-content:center;font-size:70px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 26px #16345a08}.h2{font-size:20px;margin:0 0 14px}.label{display:block;font-size:13px;font-weight:700;margin:13px 0 7px}.input,select{width:100%;padding:12px;border:1px solid #d5dfec;border-radius:11px;background:#fff;color:var(--ink);font-size:15px}.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.slot{border:1px solid #d5dfec;background:#fff;border-radius:10px;padding:11px 4px;text-align:center;font-weight:700;cursor:pointer}.slot.selected{border-color:var(--blue);background:#edf4ff;color:var(--blue)}.slot:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}.btn{width:100%;margin-top:15px;border:0;border-radius:12px;background:var(--blue);color:white;padding:14px;font-size:15px;font-weight:800;cursor:pointer}.btn.secondary{background:#eef4ff;color:#2459bd;border:1px solid #d6e4ff}.note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}.summary{background:var(--pale);border-radius:13px;padding:13px;margin-top:13px}.small{font-size:13px;color:var(--muted)}.result{border:1px solid #b9e2d0;background:#f0fbf6;color:#135f42;border-radius:12px;padding:13px;margin-top:13px}.hide{display:none}.section{margin:24px 0}.footer{text-align:center;color:var(--muted);font-size:12px;padding:28px 0}.navlinks{display:flex;gap:8px;flex-wrap:wrap}.navlinks a{color:var(--blue);font-weight:700;text-decoration:none;font-size:13px}.status{display:inline-block;padding:4px 8px;border-radius:20px;background:#fff4dd;color:#8a5a00;font-size:11px;font-weight:800}
-@media(max-width:700px){.wrap{padding:14px}.hero{grid-template-columns:1fr;padding-top:20px}.art{min-height:115px;font-size:50px}.grid{grid-template-columns:1fr}.hero h1{font-size:38px}.slots{grid-template-columns:repeat(3,1fr)}}
-</style></head><body><div class="wrap">
-<nav class="nav"><div class="logo">Queue<span>Less</span></div><div class="navlinks"><a href="#book">Book a slot</a><a href="#partner">Partner registration</a></div></nav>
-<section class="hero"><div><div class="tag">LESS WAITING. MORE LIVING.</div><h1>Your time is too valuable for queues.</h1><p>Choose a service, reserve a time, and arrive when it’s your turn. QueueLess is building a simpler way to book everyday services.</p></div><div class="art" aria-hidden="true">🗓️ ⏱️</div></section>
-<section id="book" class="section"><div class="grid"><div class="card"><h2 class="h2">Find a service</h2><label class="label">Service type</label><select id="service"><option>Clinic appointment</option><option>Salon</option><option>Vehicle service</option><option>Diagnostic lab</option><option>Restaurant table</option></select><label class="label">Business / area</label><input class="input" id="place" placeholder="Business name or area"><label class="label">Date</label><input class="input" type="date" id="date"><label class="label">Demo slots</label><div class="slots" id="slots"></div><p class="note">Demo only. These are not live provider availability.</p></div>
-<div class="card"><h2 class="h2">Booking preview</h2><label class="label">Your name</label><input class="input" id="name" placeholder="Full name"><label class="label">Mobile number</label><input class="input" id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit number"><div class="summary"><strong>Selected time</strong><div id="selected" class="small">Choose a slot to preview.</div></div><button class="btn" id="book">Preview booking</button><div id="bookmsg" class="result hide"></div><p class="note">This preview does not make or store a real reservation.</p></div></div></section>
-<section id="partner" class="section"><div class="card"><h2 class="h2">Partner with QueueLess</h2><p class="small">Business owners can submit details to request a listing. Approval and live booking activation will be handled after verification.</p><form id="partnerForm"><label class="label">Business name</label><input class="input" id="biz" required placeholder="Business / clinic / lab name"><label class="label">Owner or manager name</label><input class="input" id="owner" required placeholder="Contact person"><label class="label">Business phone</label><input class="input" id="bizphone" required inputmode="tel" maxlength="10" placeholder="10-digit number"><label class="label">Business type</label><select id="biztype"><option>Diagnostic lab</option><option>Clinic</option><option>Salon</option><option>Vehicle service centre</option><option>Restaurant</option><option>Other</option></select><label class="label">Business address / area</label><input class="input" id="address" required placeholder="Full address and area"><label class="label">Services and typical duration</label><textarea class="input" id="services" rows="3" placeholder="e.g. blood test, 15-minute appointment slots"></textarea><button class="btn" type="submit">Submit partner request</button></form><div id="partnermsg" class="result hide"></div><p class="note">Prototype notice: this form currently runs only in this browser. It does not transmit details to QueueLess or create an actual partner account.</p></div></section>
-<div class="footer">QueueLess prototype · Self-registration preview · Not yet connected to a booking backend</div></div>
+:root {
+--ink:#10233c;
+--muted:#64748b;
+--blue:#2563eb;
+--pale:#eff6ff;
+--line:#dbe5f1;
+}
+*{box-sizing:border-box}
+body{
+margin:0;
+background:#f6f8fc;
+color:var(--ink);
+font-family:system-ui,Arial,sans-serif
+}
+.wrap{max-width:1000px;margin:auto;padding:18px}
+.nav{
+display:flex;justify-content:space-between;
+align-items:center;padding:10px 0
+}
+.logo{font-weight:900;font-size:24px}
+.logo span{color:var(--blue)}
+.nav a{
+color:var(--blue);text-decoration:none;
+font-weight:700;font-size:13px;margin-left:10px
+}
+.hero{
+padding:32px 0;display:grid;
+grid-template-columns:1.2fr .8fr;gap:20px
+}
+.hero h1{font-size:clamp(32px,5vw,52px);line-height:1.05}
+.hero p{color:var(--muted);line-height:1.6}
+.art{
+background:linear-gradient(135deg,#e5efff,#d5e5ff);
+border-radius:24px;display:flex;
+align-items:center;justify-content:center;
+font-size:65px;min-height:180px
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{
+background:white;border:1px solid var(--line);
+border-radius:18px;padding:20px;
+box-shadow:0 8px 26px #16345a08
+}
+h2{font-size:20px}
+.label{
+display:block;font-size:13px;
+font-weight:700;margin:13px 0 7px
+}
+.input,select{
+width:100%;padding:12px;
+border:1px solid #d5dfec;
+border-radius:11px;font-size:15px;
+background:white;color:var(--ink)
+}
+.slots{
+display:grid;grid-template-columns:repeat(3,1fr);
+gap:8px;margin-top:8px
+}
+.slot{
+padding:11px 4px;border:1px solid #d5dfec;
+border-radius:10px;background:white;
+font-weight:700;cursor:pointer
+}
+.slot.selected{
+background:#edf4ff;color:var(--blue);
+border-color:var(--blue)
+}
+.slot:disabled{opacity:.4;text-decoration:line-through}
+.btn{
+width:100%;margin-top:15px;padding:14px;
+background:var(--blue);color:white;
+border:0;border-radius:12px;
+font-size:15px;font-weight:800;cursor:pointer
+}
+.btn:disabled{opacity:.6}
+.summary{background:var(--pale);padding:13px;border-radius:13px;margin-top:13px}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+.result{
+padding:13px;border-radius:12px;margin-top:13px;
+background:#f0fbf6;color:#135f42;
+border:1px solid #b9e2d0
+}
+.error{background:#fff1f1;color:#a11}
+.hide{display:none}
+.section{margin:24px 0}
+.footer{text-align:center;color:var(--muted);padding:25px;font-size:12px}
+@media(max-width:700px){
+.hero,.grid{grid-template-columns:1fr}
+.art{min-height:110px}
+.hero h1{font-size:38px}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<nav class="nav">
+<div class="logo">Queue<span>Less</span></div>
+<div>
+<a href="#book">Book</a>
+<a href="#partner">Partner</a>
+</div>
+</nav>
+
+<section class="hero">
+<div>
+<p><strong>LESS WAITING. MORE LIVING.</strong></p>
+<h1>Your time is too valuable for queues.</h1>
+<p>Choose a service, reserve a time, and arrive when it's your turn.</p>
+</div>
+<div class="art">🗓️ ⏱️</div>
+</section>
+
+<section id="book" class="section">
+<div class="grid">
+
+<div class="card">
+<h2>Find a service</h2>
+
+<label class="label">Service type</label>
+<select id="service">
+<option>Clinic appointment</option>
+<option>Salon</option>
+<option>Vehicle service</option>
+<option>Diagnostic lab</option>
+<option>Restaurant table</option>
+</select>
+
+<label class="label">Business / area</label>
+<input class="input" id="place" placeholder="Business name or area">
+
+<label class="label">Date</label>
+<input class="input" type="date" id="date">
+
+<label class="label">Available demo slots</label>
+<div class="slots" id="slots"></div>
+
+<p class="note">These are sample times, not live provider availability.</p>
+</div>
+
+<div class="card">
+<h2>Booking details</h2>
+
+<label class="label">Your name</label>
+<input class="input" id="name" placeholder="Full name">
+
+<label class="label">Mobile number</label>
+<input class="input" id="phone" maxlength="10"
+inputmode="numeric" placeholder="10-digit number">
+
+<div class="summary">
+<strong>Selected time</strong>
+<div id="selected">Choose a slot</div>
+</div>
+
+<button class="btn" id="book">Confirm booking</button>
+<div id="bookmsg" class="result hide"></div>
+</div>
+
+</div>
+</section>
+
+<section id="partner" class="section">
+<div class="card">
+<h2>Partner with QueueLess</h2>
+<p class="note">Register your business to request a QueueLess listing.</p>
+
+<form id="partnerForm">
+
+<label class="label">Business name</label>
+<input class="input" id="biz" required>
+
+<label class="label">Owner name</label>
+<input class="input" id="owner" required>
+
+<label class="label">Business phone</label>
+<input class="input" id="bizphone" required maxlength="10" inputmode="numeric">
+
+<label class="label">Business type</label>
+<select id="biztype">
+<option>Diagnostic lab</option>
+<option>Clinic</option>
+<option>Salon</option>
+<option>Vehicle service centre</option>
+<option>Restaurant</option>
+<option>Other</option>
+</select>
+
+<label class="label">Business address</label>
+<input class="input" id="address" required>
+
+<label class="label">Services and duration</label>
+<textarea class="input" id="services" rows="3"></textarea>
+
+<button class="btn" type="submit">Submit partner request</button>
+</form>
+
+<div id="partnermsg" class="result hide"></div>
+</div>
+</section>
+
+<div class="footer">
+QueueLess · Powered by Supabase
+</div>
+
+</div>
+
 <script>
-const times=['09:00 AM','09:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM','02:00 PM'];let chosen='';const wrap=document.getElementById('slots');times.forEach((t,i)=>{let b=document.createElement('button');b.className='slot';b.type='button';b.textContent=t;if(i===2||i===6)b.disabled=true;b.onclick=()=>{chosen=t;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');document.getElementById('selected').textContent=t;document.getElementById('bookmsg').classList.add('hide')};wrap.appendChild(b)});
-const dateEl=document.getElementById('date');let now=new Date();dateEl.min=new Date(now-now.getTimezoneOffset()*60000).toISOString().slice(0,10);dateEl.value=dateEl.min;
-document.getElementById('book').onclick=()=>{let n=document.getElementById('name').value.trim(),p=document.getElementById('phone').value.trim(),loc=document.getElementById('place').value.trim(),m=document.getElementById('bookmsg');if(!n||!p||!loc||!chosen){alert('Enter your name, phone, business/area, and choose a demo slot.');return}if(!/^\d{10}$/.test(p)){alert('Enter a valid 10-digit phone number.');return}m.textContent=`Demo preview: ${n} · ${document.getElementById('service').value} · ${loc} · ${dateEl.value} · ${chosen}. No real booking created.`;m.classList.remove('hide')};
-document.getElementById('partnerForm').onsubmit=e=>{e.preventDefault();let m=document.getElementById('partnermsg');m.textContent=`Partner request preview for ${document.getElementById('biz').value}: submitted in this browser demo, status PENDING VERIFICATION. No information was sent or stored on a server.`;m.classList.remove('hide')};
-</script></body></html>
+const SUPABASE_URL =
+'https://hrdrkepzlumlbwnhnaob.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_bpO4LsR6W4nJdJZrKGz2SQ_t37XBHPM';
+
+const db = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+const times = [
+'09:00 AM','09:30 AM','10:00 AM',
+'10:30 AM','11:00 AM','11:30 AM',
+'12:00 PM','12:30 PM','02:00 PM'
+];
+
+let chosen = '';
+
+const slots = document.getElementById('slots');
+
+times.forEach((time,index)=>{
+const btn=document.createElement('button');
+btn.type='button';
+btn.className='slot';
+btn.textContent=time;
+
+if(index===2 || index===6) btn.disabled=true;
+
+btn.onclick=()=>{
+chosen=time;
+document.querySelectorAll('.slot').forEach(x=>
+x.classList.remove('selected'));
+btn.classList.add('selected');
+document.getElementById('selected').textContent=time;
+};
+slots.appendChild(btn);
+});
+
+const dateEl=document.getElementById('date');
+const today=new Date();
+const localDate=new Date(
+today.getTime()-today.getTimezoneOffset()*60000
+).toISOString().slice(0,10);
+
+dateEl.min=localDate;
+dateEl.value=localDate;
+
+function showMessage(id,message,isError=false){
+const el=document.getElementById(id);
+el.textContent=message;
+el.classList.remove('hide','error');
+if(isError) el.classList.add('error');
+}
+
+document.getElementById('book').onclick=async()=>{
+const button=document.getElementById('book');
+const name=document.getElementById('name').value.trim();
+const phone=document.getElementById('phone').value.trim();
+const place=document.getElementById('place').value.trim();
+
+if(!name || !place || !chosen || !dateEl.value){
+alert('Please complete all booking details.');
+return;
+}
+
+if(!/^[6-9]\d{9}$/.test(phone)){
+alert('Enter a valid Indian 10-digit mobile number.');
+return;
+}
+
+button.disabled=true;
+button.textContent='Submitting...';
+
+try{
+const {error}=await db.from('bookings').insert([{
+customer_name:name,
+phone:phone,
+service_type:document.getElementById('service').value,
+business_area:place,
+booking_date:dateEl.value,
+booking_time:chosen,
+status:'PENDING'
+}]);
+
+if(error) throw error;
+
+showMessage('bookmsg',
+'Booking submitted successfully! Your request is pending confirmation.');
+
+document.getElementById('name').value='';
+document.getElementById('phone').value='';
+document.getElementById('place').value='';
+chosen='';
+document.getElementById('selected').textContent='Choose a slot';
+document.querySelectorAll('.slot').forEach(x=>
+x.classList.remove('selected'));
+
+}catch(error){
+console.error(error);
+showMessage('bookmsg',
+'Booking could not be submitted. Please check your database setup and try again.',true);
+}finally{
+button.disabled=false;
+button.textContent='Confirm booking';
+}
+};
+
+document.getElementById('partnerForm').onsubmit=async(e)=>{
+e.preventDefault();
+
+const button=e.target.querySelector('button');
+button.disabled=true;
+button.textContent='Submitting...';
+
+const phone=document.getElementById('bizphone').value.trim();
+
+if(!/^[6-9]\d{9}$/.test(phone)){
+showMessage('partnermsg','Enter a valid Indian 10-digit mobile number.',true);
+button.disabled=false;
+button.textContent='Submit partner request';
+return;
+}
+
+try{
+const {error}=await db.from('partner_requests').insert([{
+business_name:document.getElementById('biz').value.trim(),
+owner_name:document.getElementById('owner').value.trim(),
+business_phone:phone,
+business_type:document.getElementById('biztype').value,
+address:document.getElementById('address').value.trim(),
+services:document.getElementById('services').value.trim(),
+status:'PENDING'
+}]);
+
+if(error) throw error;
+
+showMessage('partnermsg',
+'Partner request submitted successfully! Status: Pending verification.');
+
+e.target.reset();
+
+}catch(error){
+console.error(error);
+showMessage('partnermsg',
+'Request could not be submitted. Please check your database setup.',true);
+}finally{
+button.disabled=false;
+button.textContent='Submit partner request';
+}
+};
+</script>
+</body>
+</html>
